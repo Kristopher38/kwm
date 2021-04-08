@@ -1,0 +1,3 @@
+[submodule "OCGraphLib"]
+	path = OCGraphLib
+	url = https://github.com/Kristopher38/OCGraphLib.git
