@@ -14,7 +14,9 @@ function HWBuffer:draw(col, row, width, height, fromCol, fromRow, destination)
 end
 
 function HWBuffer:select()
-    self.gpu.setActiveBuffer(self.bufferId)
+    if self.bufferId then
+        self.gpu.setActiveBuffer(self.bufferId)
+    end
 end
 
 function HWBuffer:resize(width, height)
