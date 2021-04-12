@@ -62,33 +62,38 @@ local function callHandlers(evt, child, evtType)
     end
 end
 
-function Renderable:draw(force, parentx, parenty)
+function Renderable:draw(force, parentx, parenty, parenttx, parentty, parentsw, parentsh)
     if self.shouldUpdate then
         self.shouldUpdate = false
         self:update()
     end
     local dirty = self.buffered and self.gpuBuf.dirty
     -- calculate widget's absolute position from relative position and parent offset
-    parentx = parentx or 0
-    parenty = parenty or 0
+    parentx = parentx or self.posx
+    parenty = parenty or self.posx
+    parenttx = parenttx or self.posx
+    parentty = parentty or self.posx
+    parentsw = parentsw or self.sizex
+    parentsh = parentsh or self.sizey
     local absolutex = self.posx + (parentx or 0)
     local absolutey = self.posy + (parenty or 0)
-    local parent = self.parent or {sizex = 0, sizey = 0}
 
-    local tx = absolutex > parentx and absolutex or parentx
-    local ty = absolutey > parenty and absolutey or parenty
-    local sx = parentx - absolutex >= 0 and parentx - absolutex or 0
-    local sy = parenty - absolutey >= 0 and parenty - absolutey or 0
-    local sw = absolutex < parentx and self.sizex - sx + 1 or parentx + parent.sizex - absolutex
-    local sh = absolutey < parenty and self.sizey - sy + 1 or parenty + parent.sizey - absolutey
+    local sx = absolutex < parenttx and parenttx - absolutex or 0
+    local sy = absolutey < parentty and parentty - absolutey or 0
+    local tx = absolutex > parenttx and absolutex or parenttx
+    local ty = absolutey > parentty and absolutey or parentty
+    local sw = absolutex < parentx and math.max(0, math.min(self.sizex - sx, parenttx + parentsw - tx)) or math.max(0, math.min(self.sizex, parenttx + parentsw - tx))
+    local sh = absolutey < parenty and math.max(0, math.min(self.sizey - sy, parentty + parentsh - ty)) or math.max(0, math.min(self.sizey, parentty + parentsh - ty))
 
     if self.buffered and (self.gpuBuf.dirty or force) then
-        --print(string.format("parentx: %d, parenty: %d, self.sizex: %d, self.sizey: %d, self.posx: %d, self.posy: %d, absolutex: %d, absolutey: %d, tx: %d, ty: %d, sx: %d, sy: %d, sw: %d, sh: %d\n",
-        --      parentx, parenty, self.sizex, self.sizey, self.posx, self.posy, absolutex, absolutey, tx, ty, sx, sy, sw, sh))
+        if self.type == "panel" then
+            --print(string.format("parentx: %d, parenty: %d, self.sizex: %d, self.sizey: %d, self.posx: %d, self.posy: %d, absolutex: %d, absolutey: %d, tx: %d, ty: %d, sx: %d, sy: %d, sw: %d, sh: %d\n",
+            --  parentx, parenty, self.sizex, self.sizey, self.posx, self.posy, absolutex, absolutey, tx, ty, sx, sy, sw, sh))
+        end
         self.gpuBuf:draw(tx + 1, ty + 1, sw, sh, sy + 1, sx + 1)
     end
     for i = 1, #self.children do
-        self.children[i]:draw(force or dirty, tx, ty)
+        self.children[i]:draw(force or dirty, absolutex, absolutey, tx, ty, sw, sh)
     end
 end
 
