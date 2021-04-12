@@ -15,7 +15,7 @@ Label.focusable = false
 function Label:setText(text)
     self.text = text or ""
     self:setSize(#self.text, 1)
-    self.shouldUpate = true
+    self.shouldUpdate = true
 end
 
 function Label:setFgColor(color)
