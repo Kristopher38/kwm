@@ -75,7 +75,7 @@ function Workspace:eventLoop()
                 }
                 parsed.relativex = parsed.prevDrag.x - parsed.x
                 parsed.relativey = parsed.prevDrag.y - parsed.y
-                parsed.type = parsed.startDrag.dragging and "dragStart" or parsed.type
+                parsed.type = parsed.startDrag.dragging and parsed.type or "dragStart"
                 parsed.startDrag.dragging = true
                 prevDrag[parsed.playerName] = parsed
                 events[#events+1] = parsed

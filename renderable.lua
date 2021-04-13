@@ -144,14 +144,25 @@ function Renderable:propagateEvent(ws, evt, absolutex, absolutey)
             if targeted then
                 callHandlers(evt, child, "onClick")
             end
-        elseif evt.type == "drop" and targeted then
-            callHandlers(evt, child, "onRelease")
+        elseif evt.type == "drop" then
+            child:propagateEvent(ws, evt, childAbsx, childAbsy)
+            if targeted then
+                callHandlers(evt, child, "onRelease")
+            elseif evt.startDrag.widget == child then
+                callHandlers(evt, evt.startDrag.widget, "onRelease")
+            end
         end
 
         -- first drag event
         if evt.prevDrag and isPointInRect(evt.prevDrag.x, evt.prevDrag.y, childAbsx, childAbsy, child.sizex, child.sizey) then
             if evt.type == "drag" or evt.type == "dragStart" then
                 callHandlers(evt, child, "onStartDrag")
+            end
+            if evt.type == "dragStart" then
+                -- guarantee only downmost widget in the hierarchy as being dragged
+                if not evt.startDrag.widget then
+                    evt.startDrag.widget = child
+                end
             end
         end
         if evt.type == "key_down" then
