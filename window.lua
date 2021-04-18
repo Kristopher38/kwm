@@ -11,7 +11,6 @@ local Window = utils.makeClass(function(self, sizex, sizey, posx, posy, title)
         onDrag = self.internalOnDrag,
         onRelease = self.internalOnDrop
     }
-    self:update()
 end)
 
 Window.type = "window"
@@ -22,17 +21,12 @@ function Window:setTitle(str)
     self.shouldUpdate = true
 end
 
-function Window:update()
-    self:startDraw()
-
-    local gpu = self.gpu
+function Window:update(gpu)
     gpu.setBackground(0xB4B4B4)
     gpu.fill(1, 1, self.sizex, self.sizey, " ")
     gpu.setBackground(0x143CC8)
     gpu.setForeground(0xFFFFFF)
     gpu.set(1, 1, " " .. self.title .. string.rep(" ", self.sizex - #self.title))
-
-    self:endDraw()
 end
 
 function Window:internalOnDrop(evt)

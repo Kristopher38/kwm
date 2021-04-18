@@ -6,7 +6,6 @@ local Label = utils.makeClass(function(self, posx, posy, text, fgcolor, bgcolor)
     self.text = text or ""
     self.fgcolor = fgcolor or 0xFFFFFF
     self.bgcolor = bgcolor or 0x000000
-    self:update()
 end)
 
 Label.type = "label"
@@ -28,13 +27,10 @@ function Label:setBgColor(color)
     self.shouldUpdate = true
 end
 
-function Label:update()
-    self:startDraw()
-    local gpu = self.gpu
+function Label:update(gpu)
     gpu.setForeground(self.fgcolor)
     gpu.setBackground(self.bgcolor)
     gpu.set(1, 1, self.text)
-    self:endDraw()
 end
 
 return Label

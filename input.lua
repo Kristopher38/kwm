@@ -23,16 +23,12 @@ local Input = utils.makeClass(function(self, sizex, sizey, posx, posy, placehold
         self.shouldUpdate = true
     end
     self.blinkTimerId = -1
-    self:update()
 end)
 
 Input.type = "input"
 Input.focusable = true
 
-function Input:update()
-    self:startDraw()
-
-    local gpu = self.gpu
+function Input:update(gpu)
     if #self.text > 0 or self.focused then
         gpu.setBackground(self.textBgColor)
         gpu.setForeground(self.textFgColor)
@@ -55,8 +51,6 @@ function Input:update()
         gpu.setForeground(0x808080) -- gray
         gpu.set(1, 1, self.placeholder .. string.rep(" ", self.sizex - #self.text))
     end
-
-    self:endDraw()
 end
 
 function Input:forceBlinkOn()

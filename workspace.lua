@@ -12,7 +12,6 @@ local Workspace = utils.makeClass(function(self, sizex, sizey, posx, posy, gpuPr
     self.running = false
     self.bgcolor = 0xFFFFFF
     self.focusedWidgets = {}
-    self:update()
 end)
 
 Workspace.type = "workspace"
@@ -100,7 +99,7 @@ function Workspace:eventLoop()
     end
 end
 
-function Workspace:update()
+function Workspace:update(gpu)
     --self:startDraw()
     local w, h = self.gpu.getResolution()
     self.gpu.setBackground(0x000000)

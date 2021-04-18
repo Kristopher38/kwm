@@ -6,7 +6,6 @@ local Graph = utils.makeClass(function(self, sizex, sizey, posx, posy, data, max
     self:__initBase(Renderable(sizex, sizey, posx, posy, true))
     self.data = data or {}
     self.maxval = maxval
-    self:update()
 end)
 
 function Graph:setData(data)
@@ -19,12 +18,8 @@ function Graph:pushValue(val)
     self.shouldUpdate = true
 end
 
-function Graph:update()
-    self:startDraw()
-
+function Graph:update(gpu)
     graphlib.drawGraph(self.data, 1, 1, self.sizex, self.sizey, self.maxval)
-
-    self:endDraw()
 end
 
 return Graph

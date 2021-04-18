@@ -65,7 +65,7 @@ end
 function Renderable:draw(force, parentx, parenty, parenttx, parentty, parentsw, parentsh)
     if self.shouldUpdate then
         self.shouldUpdate = false
-        self:update()
+        self:updateWrapper()
     end
     local dirty = self.buffered and self.gpuBuf.dirty
     -- calculate widget's absolute position from relative position and parent offset
@@ -109,6 +109,7 @@ end
 function Renderable:addChild(child)
     child.parent = self
     self.children[#self.children+1] = child
+    child:updateWrapper()
 end
 
 function Renderable:propagateEvent(ws, evt, absolutex, absolutey)
@@ -172,6 +173,13 @@ function Renderable:propagateEvent(ws, evt, absolutex, absolutey)
             end
         end
     end
+end
+
+function Renderable:updateWrapper()
+    self.gpuBuf:select()
+    self:update(self.gpu)
+    self.gpu.setActiveBuffer(0)
+    self.gpuBuf:markAsDirty()
 end
 
 function Renderable:startDraw()

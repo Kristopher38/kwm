@@ -13,23 +13,17 @@ local Button = utils.makeClass(function(self, sizex, sizey, posx, posy, label, r
         onClick = self.internalOnClick,
         onRelease = self.internalOnRelease
     }
-    self:update()
 end)
 
 Button.type = "button"
 Button.focusable = true
 
-function Button:update()
-    self:startDraw()
-
-    local gpu = self.gpu
+function Button:update(gpu)
     gpu.setBackground(self.pressed and self.pressedColor or self.relasedColor)
     gpu.fill(1, 1, self.sizex, self.sizey, " ")
     gpu.setBackground(self.textBgColor)
     gpu.setForeground(self.textFgColor)
     gpu.set((self.sizex - #self.label) // 2 + 1, self.sizey // 2 + 1, self.label)
-
-    self:endDraw()
 end
 
 function Button:internalOnClick(evt)
