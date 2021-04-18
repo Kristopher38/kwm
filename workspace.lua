@@ -1,6 +1,6 @@
 local utils = require("utils")
 local event = require("event")
-local Renderable = require("renderable")
+local Widget = require("widget")
 local component = require("component")
 local defaultGpu = component.gpu
 local inspect = require("inspect")
@@ -8,7 +8,7 @@ local inspect = require("inspect")
 local Workspace = utils.makeClass(function(self, sizex, sizey, posx, posy, gpuProxy)
     gpuProxy = gpuProxy or defaultGpu
     local w, h = gpuProxy.getResolution()
-    self:__initBase(Renderable(sizex or w, sizey or h, posx or 0, posy or 0, false, gpuProxy))
+    self:__initBase(Widget(sizex or w, sizey or h, posx or 0, posy or 0, false, gpuProxy))
     self.running = false
     self.bgcolor = 0xFFFFFF
     self.focusedWidgets = {}

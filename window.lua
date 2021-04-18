@@ -1,10 +1,10 @@
 local utils = require("utils")
-local Renderable = require("renderable")
+local Widget = require("widget")
 local component = require("component")
 local inspect = require("inspect")
 
 local Window = utils.makeClass(function(self, sizex, sizey, posx, posy, title)
-    self:__initBase(Renderable(sizex, sizey, posx, posy, true))
+    self:__initBase(Widget(sizex, sizey, posx, posy, true))
     self.title = title or ""
     self.internalHandlers = {
         onStartDrag = self.internalOnStartDrag,

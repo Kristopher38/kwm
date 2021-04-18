@@ -1,9 +1,9 @@
 local utils = require("utils")
-local Renderable = require("renderable")
+local Widget = require("widget")
 local event = require("event")
 
 local Input = utils.makeClass(function(self, sizex, sizey, posx, posy, placeholder, color, textBgColor, textFgColor)
-    self:__initBase(Renderable(sizex, sizey, posx, posy, true))
+    self:__initBase(Widget(sizex, sizey, posx, posy, true))
     self.placeholder = placeholder or ""
     self.text = ""
     self.color = color or 0x000000

@@ -1,8 +1,8 @@
 local utils = require("utils")
-local Renderable = require("renderable")
+local Widget = require("widget")
 
 local Panel = utils.makeClass(function(self, sizex, sizey, posx, posy, color)
-    self:__initBase(Renderable(sizex, sizey, posx, posy, true))
+    self:__initBase(Widget(sizex, sizey, posx, posy, true))
     self.color = color or 0xFFFFFF
 end)
 

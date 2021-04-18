@@ -1,9 +1,9 @@
 local utils = require("utils")
-local Renderable = require("renderable")
+local Widget = require("widget")
 local graphlib = require("OCGraphLib/graphlib")
 
 local Graph = utils.makeClass(function(self, sizex, sizey, posx, posy, data, maxval)
-    self:__initBase(Renderable(sizex, sizey, posx, posy, true))
+    self:__initBase(Widget(sizex, sizey, posx, posy, true))
     self.data = data or {}
     self.maxval = maxval
 end)

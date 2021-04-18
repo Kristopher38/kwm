@@ -1,8 +1,8 @@
 local utils = require("utils")
-local Renderable = require("renderable")
+local Widget = require("widget")
 
 local Label = utils.makeClass(function(self, posx, posy, text, fgcolor, bgcolor)
-    self:__initBase(Renderable(#(text or ""), 1, posx, posy, true))
+    self:__initBase(Widget(#(text or ""), 1, posx, posy, true))
     self.text = text or ""
     self.fgcolor = fgcolor or 0xFFFFFF
     self.bgcolor = bgcolor or 0x000000

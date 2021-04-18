@@ -1,8 +1,8 @@
 local utils = require("utils")
-local Renderable = require("renderable")
+local Widget = require("widget")
 
 local Button = utils.makeClass(function(self, sizex, sizey, posx, posy, label, releasedColor, pressedColor, textBgColor, textFgColor)
-    self:__initBase(Renderable(sizex, sizey, posx, posy, true))
+    self:__initBase(Widget(sizex, sizey, posx, posy, true))
     self.label = label or ""
     self.textFgColor = 0xFFFFFF
     self.textBgColor = 0x000000

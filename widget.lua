@@ -3,7 +3,7 @@ local HWBuffer = require("HWBuffer")
 local component = require("component")
 local defaultGpu = component.gpu
 
-local Renderable = utils.makeClass(function(self, sizex, sizey, posx, posy, buffered, gpuProxy)
+local Widget = utils.makeClass(function(self, sizex, sizey, posx, posy, buffered, gpuProxy)
     self.sizex = sizex
     self.sizey = sizey
     self.posx = posx
@@ -19,10 +19,10 @@ local Renderable = utils.makeClass(function(self, sizex, sizey, posx, posy, buff
     self.children = {}
 end)
 
-Renderable.type = "renderable"
---Renderable.focusable = false
+Widget.type = "widget"
+--Widget.focusable = false
 
-function Renderable:setPos(x, y)
+function Widget:setPos(x, y)
     -- TODO: repaint area that was previously covered by the widget in a saner manner
     self.gpuBuf:markAsDirty()
     local parent = self.parent
@@ -43,7 +43,7 @@ function Renderable:setPos(x, y)
     self.shouldUpdate = true
 end
 
-function Renderable:setSize(x, y)
+function Widget:setSize(x, y)
     self.sizex = x
     self.sizey = y
     self.gpuBuf:resize(x, y)
@@ -62,7 +62,7 @@ local function callHandlers(evt, child, evtType)
     end
 end
 
-function Renderable:draw(force, parentx, parenty, parenttx, parentty, parentsw, parentsh)
+function Widget:draw(force, parentx, parenty, parenttx, parentty, parentsw, parentsh)
     if self.shouldUpdate then
         self.shouldUpdate = false
         self:updateWrapper()
@@ -97,7 +97,7 @@ function Renderable:draw(force, parentx, parenty, parenttx, parentty, parentsw, 
     end
 end
 
-function Renderable:destroy()
+function Widget:destroy()
     for i = 1, #self.children do
         self.children[i]:destroy()
     end
@@ -106,13 +106,13 @@ function Renderable:destroy()
     end
 end
 
-function Renderable:addChild(child)
+function Widget:addChild(child)
     child.parent = self
     self.children[#self.children+1] = child
     child:updateWrapper()
 end
 
-function Renderable:propagateEvent(ws, evt, absolutex, absolutey)
+function Widget:propagateEvent(ws, evt, absolutex, absolutey)
     for i = 1, #self.children do
         local child = self.children[i]
         -- calculate child's absolute position from it's relative position and parent offset
@@ -175,23 +175,23 @@ function Renderable:propagateEvent(ws, evt, absolutex, absolutey)
     end
 end
 
-function Renderable:updateWrapper()
+function Widget:updateWrapper()
     self.gpuBuf:select()
     self:update(self.gpu)
     self.gpu.setActiveBuffer(0)
     self.gpuBuf:markAsDirty()
 end
 
-function Renderable:startDraw()
+function Widget:startDraw()
     self.gpuBuf:select()
 end
 
-function Renderable:endDraw()
+function Widget:endDraw()
     self.gpu.setActiveBuffer(0)
     self.gpuBuf:markAsDirty()
 end
 
 -- pure virtual function - inheriting classes should override this and implement widget drawing in it
-function Renderable:update() end
+function Widget:update() end
 
-return Renderable
+return Widget
