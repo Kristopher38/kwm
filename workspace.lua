@@ -5,10 +5,10 @@ local component = require("component")
 local defaultGpu = component.gpu
 local inspect = require("inspect")
 
-local Workspace = utils.makeClass(function(self, sizex, sizey, posx, posy, gpuProxy)
+local Workspace = utils.makeClass(function(self, x, y, width, height, gpuProxy)
     gpuProxy = gpuProxy or defaultGpu
     local w, h = gpuProxy.getResolution()
-    self:__initBase(Widget(sizex or w, sizey or h, posx or 0, posy or 0, false, gpuProxy))
+    self:__initBase(Widget(x or 0, y or 0, width or w, height or h, false, gpuProxy))
     self.running = false
     self.bgcolor = 0xFFFFFF
     self.focusedWidgets = {}

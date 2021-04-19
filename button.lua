@@ -1,8 +1,8 @@
 local utils = require("utils")
 local Widget = require("widget")
 
-local Button = utils.makeClass(function(self, sizex, sizey, posx, posy, label, releasedColor, pressedColor, textBgColor, textFgColor)
-    self:__initBase(Widget(sizex, sizey, posx, posy, true))
+local Button = utils.makeClass(function(self, x, y, width, height, label, releasedColor, pressedColor, textBgColor, textFgColor)
+    self:__initBase(Widget(x, y, width, height, true))
     self.label = label or ""
     self.textFgColor = 0xFFFFFF
     self.textBgColor = 0x000000
@@ -20,10 +20,10 @@ Button.focusable = true
 
 function Button:update(gpu)
     gpu.setBackground(self.pressed and self.pressedColor or self.relasedColor)
-    gpu.fill(1, 1, self.sizex, self.sizey, " ")
+    gpu.fill(1, 1, self.width, self.height, " ")
     gpu.setBackground(self.textBgColor)
     gpu.setForeground(self.textFgColor)
-    gpu.set((self.sizex - #self.label) // 2 + 1, self.sizey // 2 + 1, self.label)
+    gpu.set((self.width - #self.label) // 2 + 1, self.height // 2 + 1, self.label)
 end
 
 function Button:internalOnClick(evt)

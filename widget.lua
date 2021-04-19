@@ -3,18 +3,18 @@ local HWBuffer = require("HWBuffer")
 local component = require("component")
 local defaultGpu = component.gpu
 
-local Widget = utils.makeClass(function(self, sizex, sizey, posx, posy, buffered, gpuProxy)
-    self.sizex = sizex
-    self.sizey = sizey
-    self.posx = posx
-    self.posy = posy
+local Widget = utils.makeClass(function(self, x, y, width, height, buffered, gpuProxy)
+    self.x = x
+    self.y = y
+    self.width = width
+    self.height = height
     self.gpu = gpuProxy and gpuProxy or defaultGpu
     self.buffered = buffered
     self.shouldUpdate = false
     self.parent = nil
     self.focused = nil
     if buffered then
-        self.gpuBuf = HWBuffer(self.gpu, sizex, sizey)
+        self.gpuBuf = HWBuffer(self.gpu, width, height)
     end
     self.children = {}
 end)
@@ -38,14 +38,14 @@ function Widget:setPos(x, y)
         parent = parent.parent
     end
 
-    self.posx = x
-    self.posy = y
+    self.x = x
+    self.y = y
     self.shouldUpdate = true
 end
 
 function Widget:setSize(x, y)
-    self.sizex = x
-    self.sizey = y
+    self.width = x
+    self.height = y
     self.gpuBuf:resize(x, y)
 end
 
@@ -69,26 +69,26 @@ function Widget:draw(force, parentx, parenty, parenttx, parentty, parentsw, pare
     end
     local dirty = self.buffered and self.gpuBuf.dirty
     -- calculate widget's absolute position from relative position and parent offset
-    parentx = parentx or self.posx
-    parenty = parenty or self.posx
-    parenttx = parenttx or self.posx
-    parentty = parentty or self.posx
-    parentsw = parentsw or self.sizex
-    parentsh = parentsh or self.sizey
-    local absolutex = self.posx + (parentx or 0)
-    local absolutey = self.posy + (parenty or 0)
+    parentx = parentx or self.x
+    parenty = parenty or self.x
+    parenttx = parenttx or self.x
+    parentty = parentty or self.x
+    parentsw = parentsw or self.width
+    parentsh = parentsh or self.height
+    local absolutex = self.x + (parentx or 0)
+    local absolutey = self.y + (parenty or 0)
 
     local sx = absolutex < parenttx and parenttx - absolutex or 0
     local sy = absolutey < parentty and parentty - absolutey or 0
     local tx = absolutex > parenttx and absolutex or parenttx
     local ty = absolutey > parentty and absolutey or parentty
-    local sw = absolutex < parentx and math.max(0, math.min(self.sizex - sx, parenttx + parentsw - tx)) or math.max(0, math.min(self.sizex, parenttx + parentsw - tx))
-    local sh = absolutey < parenty and math.max(0, math.min(self.sizey - sy, parentty + parentsh - ty)) or math.max(0, math.min(self.sizey, parentty + parentsh - ty))
+    local sw = absolutex < parentx and math.max(0, math.min(self.width - sx, parenttx + parentsw - tx)) or math.max(0, math.min(self.width, parenttx + parentsw - tx))
+    local sh = absolutey < parenty and math.max(0, math.min(self.height - sy, parentty + parentsh - ty)) or math.max(0, math.min(self.height, parentty + parentsh - ty))
 
     if self.buffered and (self.gpuBuf.dirty or force) then
         if self.type == "panel" then
-            --print(string.format("parentx: %d, parenty: %d, self.sizex: %d, self.sizey: %d, self.posx: %d, self.posy: %d, absolutex: %d, absolutey: %d, tx: %d, ty: %d, sx: %d, sy: %d, sw: %d, sh: %d\n",
-            --  parentx, parenty, self.sizex, self.sizey, self.posx, self.posy, absolutex, absolutey, tx, ty, sx, sy, sw, sh))
+            --print(string.format("parentx: %d, parenty: %d, self.width: %d, self.height: %d, self.x: %d, self.y: %d, absolutex: %d, absolutey: %d, tx: %d, ty: %d, sx: %d, sy: %d, sw: %d, sh: %d\n",
+            --  parentx, parenty, self.width, self.height, self.x, self.y, absolutex, absolutey, tx, ty, sx, sy, sw, sh))
         end
         self.gpuBuf:draw(tx + 1, ty + 1, sw, sh, sy + 1, sx + 1)
     end
@@ -117,9 +117,9 @@ function Widget:propagateEvent(ws, evt, absolutex, absolutey)
         local child = self.children[i]
         -- calculate child's absolute position from it's relative position and parent offset
         -- if absolutex and absolutey are missing assume we're in toplevel container (usually Workspace)
-        local childAbsx = child.posx + (absolutex or self.posx)
-        local childAbsy = child.posy + (absolutey or self.posy)
-        local targeted = evt.x and evt.y and isPointInRect(evt.x, evt.y, childAbsx, childAbsy, child.sizex, child.sizey)
+        local childAbsx = child.x + (absolutex or self.x)
+        local childAbsy = child.y + (absolutey or self.y)
+        local targeted = evt.x and evt.y and isPointInRect(evt.x, evt.y, childAbsx, childAbsy, child.width, child.height)
 
         if targeted then
             evt.localx = evt.x - childAbsx
@@ -155,7 +155,7 @@ function Widget:propagateEvent(ws, evt, absolutex, absolutey)
         end
 
         -- first drag event
-        if evt.prevDrag and isPointInRect(evt.prevDrag.x, evt.prevDrag.y, childAbsx, childAbsy, child.sizex, child.sizey) then
+        if evt.prevDrag and isPointInRect(evt.prevDrag.x, evt.prevDrag.y, childAbsx, childAbsy, child.width, child.height) then
             if evt.type == "drag" or evt.type == "dragStart" then
                 callHandlers(evt, child, "onStartDrag")
             end

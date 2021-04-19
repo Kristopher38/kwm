@@ -2,8 +2,8 @@ local utils = require("utils")
 local Widget = require("widget")
 local event = require("event")
 
-local Input = utils.makeClass(function(self, sizex, sizey, posx, posy, placeholder, color, textBgColor, textFgColor)
-    self:__initBase(Widget(sizex, sizey, posx, posy, true))
+local Input = utils.makeClass(function(self, x, y, width, height, placeholder, color, textBgColor, textFgColor)
+    self:__initBase(Widget(x, y, width, height, true))
     self.placeholder = placeholder or ""
     self.text = ""
     self.color = color or 0x000000
@@ -34,7 +34,7 @@ function Input:update(gpu)
         gpu.setForeground(self.textFgColor)
         gpu.set(1, 1, self.text)
         gpu.setBackground(self.color)
-        gpu.set(#self.text + 1, 1, string.rep(" ", self.sizex - #self.text))
+        gpu.set(#self.text + 1, 1, string.rep(" ", self.width - #self.text))
         
         if self.blinkState then
             -- inverted colors for cursor - this is correct
@@ -49,7 +49,7 @@ function Input:update(gpu)
     else
         gpu.setBackground(self.color)
         gpu.setForeground(0x808080) -- gray
-        gpu.set(1, 1, self.placeholder .. string.rep(" ", self.sizex - #self.text))
+        gpu.set(1, 1, self.placeholder .. string.rep(" ", self.width - #self.text))
     end
 end
 

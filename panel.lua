@@ -1,8 +1,8 @@
 local utils = require("utils")
 local Widget = require("widget")
 
-local Panel = utils.makeClass(function(self, sizex, sizey, posx, posy, color)
-    self:__initBase(Widget(sizex, sizey, posx, posy, true))
+local Panel = utils.makeClass(function(self, x, y, width, height, color)
+    self:__initBase(Widget(x, y, width, height, true))
     self.color = color or 0xFFFFFF
 end)
 
@@ -11,7 +11,7 @@ Panel.focusable = false
 
 function Panel:update(gpu)
     gpu.setBackground(self.color)
-    gpu.fill(1, 1, self.sizex, self.sizey, " ")
+    gpu.fill(1, 1, self.width, self.height, " ")
 end
 
 function Panel:setColor(color)
